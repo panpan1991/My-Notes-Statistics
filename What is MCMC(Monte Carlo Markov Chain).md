@@ -12,7 +12,7 @@ However, the posterior can be in a dirty form or not even in a closed form. MCMC
 
 
 
-### Example
+### Example of MCMC: Gibbs sampler
 
 Two draw sample from $ f(x,y)$, we can do it in two steps:
 
