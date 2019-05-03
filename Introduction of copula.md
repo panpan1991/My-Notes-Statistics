@@ -222,9 +222,9 @@ $$
 \begin{align}r_i^2 &=(\mathbf{x})'{\Omega}^{-1}(\mathbf{x}) \\&=(Q_{EC}(u_{i1}), Q_{EC}(u_{i2})){\Omega}^{-1}(Q_{EC}(u_{i1}), Q_{EC}(u_{i2}))'\end{align}
 $$
 
+In this likelihood, both $h$ function and quantile function $Q_{EC}$ contain parameters $\alpha$, $\beta$ as well as weights $w$. 
 
-
-### Conditional probabilities
+### Conditional probabilities I
 
 
 
@@ -249,8 +249,8 @@ where $Q_{EC}$, the marginal quantile function of the elliptical distribution, i
 In joint posterior distribution
 $$
 \begin{aligned}
-P(\mathbf{\alpha}, \mathbf{\beta}, \mathbf{V}, \gamma, \rho|\mathbf{X}, Z)
-	& \propto \left[\frac{\Gamma(\frac{p}{2})}{2\pi^{p/2}}|A|^{-1}\right]^n \prod^n_{i=1}\left[r_i^{1-p}\prod_{j=1}^{k}\bigg(w_j\frac{\beta_j^{\alpha_j}}{\Gamma(\alpha_j)}r_i^{\alpha_j-1}e^{-\beta_jr_i}\bigg)^{z_{ij}}\right] \\	
+P(\mathbf{\alpha}, \mathbf{\beta}, \mathbf{V}, \gamma, \rho|\mathbf{U}, Z)
+	& \propto |A|^{-n}\prod^n_{i=1}\left[r_i^{1-p}\prod_{j=1}^{k}\bigg(w_j\frac{\beta_j^{\alpha_j}}{\Gamma(\alpha_j)}r_i^{\alpha_j-1}e^{-\beta_jr_i}\bigg)^{z_{ij}}\right] \\	
 	& \times \prod_{j=1}^{k}\frac{c}{\alpha_j^{c+1}} \\
 	& \times \prod_{j=1}^{k}\frac{b^a}{\Gamma(a)}\beta_j^{a-1}e^{-b\beta_j} \\
 	& \times \prod_{j=1}^{k-1}\gamma(1-v_j)^{\gamma-1} \\
@@ -258,6 +258,8 @@ P(\mathbf{\alpha}, \mathbf{\beta}, \mathbf{V}, \gamma, \rho|\mathbf{X}, Z)
 	& \times \mathbf{1}_{(-1 \leq \rho \leq 1)},
 \end{aligned}
 $$
+In the right side of pdf, $\mathbf{U}$ is written in a form of $\mathbf{R}$. s
+
 We won't able to separate a nice closed form posterior distribution of $\beta$, since its prior is **no longer conjugate** for the new likelihood having $\beta$ involved in $r_i$.
 
 
@@ -265,8 +267,8 @@ We won't able to separate a nice closed form posterior distribution of $\beta$, 
  The estimate of $\beta$ has to be done in a less elegant way, taking the dirty form of likelihood and using Metropolis method.
 $$
 \begin{align}
-P(\mathbf{\beta} |\mathbf{\alpha}, \mathbf{V}, \gamma, \rho,\mathbf{X}, Z)
-	& \propto \prod^n_{i=1}\left[r_i^{1-p}\prod_{j=1}^{k}\bigg(w_j\frac{\beta_j^{\alpha_j}}{\Gamma(\alpha_j)}r_i^{\alpha_j-1}e^{-\beta_jr_i}\bigg)^{z_{ij}}\right] \\	
+P(\mathbf{\beta} |\mathbf{\alpha}, \mathbf{V}, \gamma, \rho,\mathbf{U}, Z)
+	& \propto \prod^n_{i=1}\left[r_i^{1-p}\prod_{j=1}^{k}\bigg(\frac{\beta_j^{\alpha_j}}{\Gamma(\alpha_j)}r_i^{\alpha_j-1}e^{-\beta_jr_i}\bigg)^{z_{ij}}\right] \\	
 	& \times \prod_{j=1}^{k}\frac{b^a}{\Gamma(a)}\beta_j^{a-1}e^{-b\beta_j} \\
 \end{align}
 $$
@@ -274,3 +276,60 @@ The old posterior distribution for $\alpha$ is also wrong, since it didnot conta
 
 
 
+### Conditional distributions II
+
+- for latent variables $Z$
+  $$
+  \begin{align}
+  P(\mathbf{Z}|\alpha,\beta, \mathbf{V},\gamma,\rho,\mathbf{X}) 
+  & = \frac{P(\mathbf{X}|\alpha,\beta, \mathbf{V},\gamma,\rho,\mathbf{Z}) \times P(\mathbf{Z}) }{P(\mathbf{X}|\alpha,\beta, \mathbf{V},\gamma,\rho) }
+  
+  \end{align}
+  $$
+  In this case, $Z_i$'s are independent, of course, since they only depend on the corresponding $X_i$, thus the joint posterior distribution of $\mathbf{Z}$ is actually a set of independent univariate multinomial distributions. 
+
+  In our case, the latent variable is defined as 
+  $$
+  Z_{ji}=1, \mbox{if }r_i \mbox{is from component }j
+  $$
+  we will have $30 \times n$ matrix
+  $$
+  \begin{bmatrix}
+  1 0 1 \cdots 0 \\
+  0 1 0 \cdots 0 \\
+  \vdots \ddots \vdots \\
+  0 0 0 \cdots 1 \\
+  \end{bmatrix}
+  $$
+  which only has a single $1$ in its each column. Each column is a multinomial distribution.
+  $$
+  \begin{align}
+  P(Z_{ji}=1|\alpha,\beta, \mathbf{V},\gamma,\rho,\mathbf{X}) 
+  & = \frac{P(\mathbf{X}|\alpha,\beta, \mathbf{V},\gamma,\rho,Z_{ji}=1) \times P(Z_{ji}=1) }{P(\mathbf{X}|\alpha,\beta, \mathbf{V},\gamma,\rho) }
+  \end{align}
+  $$
+  
+- for $\alpha$'s 
+  $$
+  \begin{align}P(\mathbf{\alpha}|\mathbf{\beta} , \mathbf{V}, \gamma, \rho,\mathbf{X}, Z)    & \propto \prod^n_{i=1}\left[r_i^{1-p}\prod_{j=1}^{k}\bigg(\frac{\beta_j^{\alpha_j}}{\Gamma(\alpha_j)}r_i^{\alpha_j-1}e^{-\beta_jr_i}\bigg)^{z_{ij}}\right] \\       & \times \prod_{j=1}^{k}\frac{c}{\alpha_j^{c+1}} 
+  \end{align}
+  $$
+
+- for $\beta$'s
+  $$
+  \begin{align}P(\mathbf{\beta} |\mathbf{\alpha}, \mathbf{V}, \gamma, \rho,\mathbf{X}, Z)    & \propto \prod^n_{i=1}\left[r_i^{1-p}\prod_{j=1}^{k}\bigg(\frac{\beta_j^{\alpha_j}}{\Gamma(\alpha_j)}r_i^{\alpha_j-1}e^{-\beta_jr_i}\bigg)^{z_{ij}}\right] \\       & \times \prod_{j=1}^{k}\frac{b^a}{\Gamma(a)}\beta_j^{a-1}e^{-b\beta_j} \\\end{align}
+  $$
+  
+- for weights $w$'s
+
+  Since weights are not independent with each other and they apparently sum up to $1$, we do not do inference on $w$ directly. Weights $w$ will be transformed into $v$ by using stick-breaking process
+
+- for $v$'s
+  $$
+  \begin{aligned}
+  P(\mathbf{\alpha}, \mathbf{\beta}, \mathbf{V}, \gamma, \rho|\mathbf{X}, Z)
+  	& \propto\prod^n_{i=1}\left[r_i^{1-p}\prod_{j=1}^{k}\bigg(w_jr_i^{\alpha_j-1}e^{-\beta_jr_i}\bigg)^{z_{ij}}\right] \\	
+  	& \times \prod_{j=1}^{k-1}\gamma(1-v_j)^{\gamma-1} \\
+  \end{aligned}
+  $$
+  
