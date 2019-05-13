@@ -274,41 +274,8 @@ P(\mathbf{\beta} |\mathbf{\alpha}, \mathbf{V}, \gamma, \rho,\mathbf{U}, Z)
 $$
 The old posterior distribution for $\alpha$ is also wrong, since it didnot contain $\alpha$ in $r_i$'s.
 
+#### The correct conditional distribution for parameters are 
 
-
-### Conditional distributions II
-
-- for latent variables $Z$
-  $$
-  \begin{align}
-  P(\mathbf{Z}|\alpha,\beta, \mathbf{V},\gamma,\rho,\mathbf{X}) 
-  & = \frac{P(\mathbf{X}|\alpha,\beta, \mathbf{V},\gamma,\rho,\mathbf{Z}) \times P(\mathbf{Z}) }{P(\mathbf{X}|\alpha,\beta, \mathbf{V},\gamma,\rho) }
-  
-  \end{align}
-  $$
-  In this case, $Z_i$'s are independent, of course, since they only depend on the corresponding $X_i$, thus the joint posterior distribution of $\mathbf{Z}$ is actually a set of independent univariate multinomial distributions. 
-
-  In our case, the latent variable is defined as 
-  $$
-  Z_{ji}=1, \mbox{if }r_i \mbox{is from component }j
-  $$
-  we will have $30 \times n$ matrix
-  $$
-  \begin{bmatrix}
-  1 0 1 \cdots 0 \\
-  0 1 0 \cdots 0 \\
-  \vdots \ddots \vdots \\
-  0 0 0 \cdots 1 \\
-  \end{bmatrix}
-  $$
-  which only has a single $1$ in its each column. Each column is a multinomial distribution.
-  $$
-  \begin{align}
-  P(Z_{ji}=1|\alpha,\beta, \mathbf{V},\gamma,\rho,\mathbf{X}) 
-  & = \frac{P(\mathbf{X}|\alpha,\beta, \mathbf{V},\gamma,\rho,Z_{ji}=1) \times P(Z_{ji}=1) }{P(\mathbf{X}|\alpha,\beta, \mathbf{V},\gamma,\rho) }
-  \end{align}
-  $$
-  
 - for $\alpha$'s 
   $$
   \begin{align}P(\mathbf{\alpha}|\mathbf{\beta} , \mathbf{V}, \gamma, \rho,\mathbf{X}, Z)    & \propto \prod^n_{i=1}\left[r_i^{1-p}\prod_{j=1}^{k}\bigg(\frac{\beta_j^{\alpha_j}}{\Gamma(\alpha_j)}r_i^{\alpha_j-1}e^{-\beta_jr_i}\bigg)^{z_{ij}}\right] \\       & \times \prod_{j=1}^{k}\frac{c}{\alpha_j^{c+1}} 
@@ -333,3 +300,48 @@ The old posterior distribution for $\alpha$ is also wrong, since it didnot conta
   \end{aligned}
   $$
   
+
+
+
+### Conditional distributions II
+
+- for latent variables $Z$
+  $$
+  \begin{align}
+  P(\mathbf{Z}|\alpha,\beta, \mathbf{V},\gamma,\rho,\mathbf{R}) 
+  & = \frac{P(\mathbf{R}|\alpha,\beta, \mathbf{V},\gamma,\rho,\mathbf{Z}) \times P(\mathbf{Z}) }{P(\mathbf{R}|\alpha,\beta, \mathbf{V},\gamma,\rho) }
+  
+  \end{align}
+  $$
+  $$
+\begin{align}
+  r_i^2 &=(\mathbf{x})'{\Omega}^{-1}(\mathbf{x}) 
+  \\&=(Q_{EC}(u_{i1}), Q_{EC}(u_{i2})){\Omega}^{-1}(Q_{EC}(u_{i1}), Q_{EC}(u_{i2}))'\\
+  &=Q_{EC}(\mathbf{U})
+  \end{align}
+  $$
+  
+  In this case, $Z_i$'s are independent, of course, since they only depend on the corresponding $X_i$, thus the joint posterior distribution of $\mathbf{Z}$ is actually a set of independent univariate multinomial distributions. 
+  
+  In our case, the latent variable is defined as 
+  $$
+  Z_{ji}=1, \mbox{if }r_i \mbox{is from component }j
+  $$
+  we will have $30 \times n$ matrix
+  $$
+  \begin{bmatrix}
+  1 0 1 \cdots 0 \\
+  0 1 0 \cdots 0 \\
+  \vdots \ddots \vdots \\
+  0 0 0 \cdots 1 \\
+  \end{bmatrix}
+  $$
+  which only has a single $1$ in its each column. Each column is a multinomial distribution.
+  $$
+  \begin{align}
+  P(Z_{ji}=1|\alpha,\beta, \mathbf{V},\gamma,\rho,\mathbf{X}) 
+  & = \frac{P(\mathbf{X}|\alpha,\beta, \mathbf{V},\gamma,\rho,Z_{ji}=1) \times P(Z_{ji}=1) }{P(\mathbf{X}|\alpha,\beta, \mathbf{V},\gamma,\rho) }
+  \end{align}
+  $$
+  
+
