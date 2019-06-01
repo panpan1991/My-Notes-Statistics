@@ -224,6 +224,19 @@ $$
 
 In this likelihood, both $h$ function and quantile function $Q_{EC}$ contain parameters $\alpha$, $\beta$ as well as weights $w$. 
 
+### Conditional likelihood
+
+- $L(\alpha, \beta, w| A, U)$
+- $L(A|\alpha, \beta, w,U)$
+
+These two likelihood above need the whole pdf involved. 
+
+Add latent variable
+$$
+X=(Q_{EC}(u_{i1}), Q_{EC}(u_{i2}))
+$$
+
+
 ### Conditional probabilities I
 
 
