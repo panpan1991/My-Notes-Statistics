@@ -214,20 +214,25 @@ $$
 \begin{align}
 L(\mathbf{ \alpha }, \mathbf{\beta}, \mathbf{w}, A; \mathbf{U}) 
 &=\prod_{i=1}^{n}c(u_{i1}, u_{i2}) \\
-&=\prod_{i=1}^{n}|{A}|^{-1}({r_i^2})^{(1-p)/2}h(({r_i^2})^{1/2})
+&=\prod_{i=1}^{n}|{A}|^{-1}({r_i^2})^{(1-p)/2}h(({r_i^2})^{1/2})\\
+&=\prod_{i=1}^{n}|{A}|^{-1}({r_i})^{(1-p)}h({r_i}) \\
+&=\prod_{i=1}^{n}|{A}|^{-1}({r_i})^{(1-p)}\prod_{j=1}^{k}(w_jf(r_i|\alpha_j,\beta_j)^{z_{ij}}) 
 \end{align}
 $$
 where 
 $$
-\begin{align}r_i^2 &=(\mathbf{x})'{\Omega}^{-1}(\mathbf{x}) \\&=(Q_{EC}(u_{i1}), Q_{EC}(u_{i2})){\Omega}^{-1}(Q_{EC}(u_{i1}), Q_{EC}(u_{i2}))'\end{align}
+\begin{align}r_i^2 &=(\mathbf{x})'{\Omega}^{-1}(\mathbf{x}) \\&=(Q_{EC}(u_{i1}), Q_{EC}(u_{i2})){\Omega}^{-1}(Q_{EC}(u_{i1}), Q_{EC}(u_{i2}))'\\
+\\
+X&=(Q_{EC}(u_{i1}), Q_{EC}(u_{i2}))
+\end{align}
 $$
 
 In this likelihood, both $h$ function and quantile function $Q_{EC}$ contain parameters $\alpha$, $\beta$ as well as weights $w$. 
 
 ### Conditional likelihood
 
-- $L(\alpha, \beta, w| A, U)$
-- $L(A|\alpha, \beta, w,U)$
+- $L(\alpha, \beta, w| A, U, X,  R)$
+- $L(A|\alpha, \beta, w,U, X, R)$
 
 These two likelihood above need the whole pdf involved. 
 
