@@ -231,95 +231,100 @@ In this likelihood, both $h$ function and quantile function $Q_{EC}$ contain par
 
 ### Conditional likelihood
 
-- $L(\alpha, \beta, w| A, U, X,  R)$
-- $L(A|\alpha, \beta, w,U, X, R)$
+- $L(\alpha, \beta, w| \Omega, U, X,  R)$
+- $L(\Omega|\alpha, \beta, w,U, X, R)$
 
 These two likelihood above need the whole pdf involved. 
 
-Add latent variable
+$\alpha$'s are not mutually independent. Every time we update $\alpha_j$, $R$ has to be updated to make sure next operations are conditioned on the current estimate of $\alpha_j$. This requirement also applies on the estimation of $\beta$ as well as weights.
+
+
+
+### Loglikelihood
+
 $$
-X=(Q_{EC}(u_{i1}), Q_{EC}(u_{i2}))
+\begin{align}
+&L(\mathbf{ \alpha }, \mathbf{\beta}, \mathbf{w}, A; \mathbf{U}) \\
+&=\prod_{i=1}^{n}c(u_{i1}, u_{i2}) \\
+&=\prod_{i=1}^{n}|{A}|^{-1}({r_i^2})^{(1-p)/2}h(({r_i^2})^{1/2})\\
+&=\prod_{i=1}^{n}|{A}|^{-1}({r_i})^{(1-p)}h({r_i}) \\
+&=\prod_{i=1}^{n}\{|{A}|^{-1}({r_i})^{(1-p)}\prod_{j=1}^{k}(w_jf(r_i|\alpha_j,\beta_j))^{z_{ij}}\} \\
+&=-nlog|A|+(1-p)\sum_{i=1}^{n} log(r_i)+\sum_{i=1}^{n}log\Big(\prod_{j=1}^{k}(w_jf(r_i|\alpha_j,\beta_j))^{z_{ij}}\Big)\\
+&=-nlog|A|+(1-p)\sum_{i=1}^{n} log(r_i)+\sum_{i=1}^{n}\sum_{j=1}^{k}log\Big(w_jf(r_i|\alpha_j,\beta_j)\Big)^{z_{ij}}\\
+&=-nlog|A|+(1-p)\sum_{i=1}^{n} log(r_i)+\sum_{i=1}^{n}\sum_{j=1}^{k}{z_{ij}}\Big(log(w_j)+log\big(f(r_i|\alpha_j,\beta_j)\big)\Big)\\
+&=-nlog|A|+(1-p)\sum_{i=1}^{n} log(r_i)+\sum_{i=1}^{n}\sum_{j=1}^{k}\Big({z_{ij}}log(w_j)+{z_{ij}}log\big(f(r_i|\alpha_j,\beta_j)\big)\Big)\\
+&=-nlog|A|+(1-p)\sum_{i=1}^{n} log(r_i)+\sum_{i=1}^{n}\sum_{j=1}^{k}\Big({z_{ij}}log(w_j)\Big)+\\
+&\sum_{i=1}^{n}\sum_{j=1}^{k}\Big({z_{ij}}log\big(f(r_i|\alpha_j,\beta_j)\big)\Big)\\
+\end{align}
 $$
 
 
-### Conditional probabilities I
 
+### Priors
 
-
-In my master thesis, I used a gamma mixture to model function $h$, and I had
-$$
-P(\beta_j|\alpha_j, \rho, \mathbf{r}, \mathbf{z}_j) \propto  \beta_j^{\alpha_j \sum_{i=1}^{n}z_{ij}+a-1 }e^{-\beta_j(\sum_{i=1}^{n}r_iz_{ij}+b)}.
-$$
-where $\beta_j$ is a parameter for $j$th component in the gamma mixture.
-
-However, this is assuming that $r_i$'s do not contain $\beta$ .
-
-
-
-In the new case, we have 
-$$
-\begin{align}r_i^2 &=(\mathbf{x})'{\Omega}^{-1}(\mathbf{x}) \\&=(Q_{EC}(u_{i1}), Q_{EC}(u_{i2})){\Omega}^{-1}(Q_{EC}(u_{i1}), Q_{EC}(u_{i2}))'\end{align}
-$$
-where $Q_{EC}$, the marginal quantile function of the elliptical distribution, is also modelled with the same gamma mixture that we used in modelling function $h$.
-
-
-
-In joint posterior distribution
 $$
 \begin{aligned}
-P(\mathbf{\alpha}, \mathbf{\beta}, \mathbf{V}, \gamma, \rho|\mathbf{U}, Z)
-	& \propto |A|^{-n}\prod^n_{i=1}\left[r_i^{1-p}\prod_{j=1}^{k}\bigg(w_j\frac{\beta_j^{\alpha_j}}{\Gamma(\alpha_j)}r_i^{\alpha_j-1}e^{-\beta_jr_i}\bigg)^{z_{ij}}\right] \\	
-	& \times \prod_{j=1}^{k}\frac{c}{\alpha_j^{c+1}} \\
+	& \prod_{j=1}^{k}\frac{c}{\alpha_j^{c+1}} \\
 	& \times \prod_{j=1}^{k}\frac{b^a}{\Gamma(a)}\beta_j^{a-1}e^{-b\beta_j} \\
 	& \times \prod_{j=1}^{k-1}\gamma(1-v_j)^{\gamma-1} \\
 	& \times \gamma^{\eta_1-1}e^{-\eta_2\gamma}\\
 	& \times \mathbf{1}_{(-1 \leq \rho \leq 1)},
 \end{aligned}
 $$
-In the right side of pdf, $\mathbf{U}$ is written in a form of $\mathbf{R}$. s
-
-We won't able to separate a nice closed form posterior distribution of $\beta$, since its prior is **no longer conjugate** for the new likelihood having $\beta$ involved in $r_i$.
 
 
 
- The estimate of $\beta$ has to be done in a less elegant way, taking the dirty form of likelihood and using Metropolis method.
+### Log priors
+
 $$
 \begin{align}
-P(\mathbf{\beta} |\mathbf{\alpha}, \mathbf{V}, \gamma, \rho,\mathbf{U}, Z)
-	& \propto \prod^n_{i=1}\left[r_i^{1-p}\prod_{j=1}^{k}\bigg(\frac{\beta_j^{\alpha_j}}{\Gamma(\alpha_j)}r_i^{\alpha_j-1}e^{-\beta_jr_i}\bigg)^{z_{ij}}\right] \\	
-	& \times \prod_{j=1}^{k}\frac{b^a}{\Gamma(a)}\beta_j^{a-1}e^{-b\beta_j} \\
+&\sum_{j=1}^{k}\big(log(c)-(c+1)log(\alpha_j)\big) \\
+& + \sum_{j=1}^{k}\big(alog(b)+(a-1)log(\beta_j)-b\beta_j-logamma(a)\big)\\
+& + \sum_{j=1}^{k-1}\big(log(\gamma)+(\gamma-1)log(1-v_j)\big)\\
+& + (\eta_1-1)log(\gamma)-\eta_2\gamma
 \end{align}
 $$
-The old posterior distribution for $\alpha$ is also wrong, since it didnot contain $\alpha$ in $r_i$'s.
 
-#### The correct conditional distribution for parameters are 
 
-- for $\alpha$'s 
+
+
+### Conditional log posteriors
+
+- for $\alpha_j$
   $$
-  \begin{align}P(\mathbf{\alpha}|\mathbf{\beta} , \mathbf{V}, \gamma, \rho,\mathbf{X}, Z)    & \propto \prod^n_{i=1}\left[r_i^{1-p}\prod_{j=1}^{k}\bigg(\frac{\beta_j^{\alpha_j}}{\Gamma(\alpha_j)}r_i^{\alpha_j-1}e^{-\beta_jr_i}\bigg)^{z_{ij}}\right] \\       & \times \prod_{j=1}^{k}\frac{c}{\alpha_j^{c+1}} 
+  \begin{align}
+  &(1-p)\sum_{i=1}^{n} log(r_i)+\sum_{i=1}^{n}\sum_{j=1}^{k}\Big({z_{ij}}log(w_j)\Big)+\\
+  &\sum_{i=1}^{n}\sum_{j=1}^{k}\Big({z_{ij}}log\big(f(r_i|\alpha_j,\beta_j)\big)\Big) +\sum_{j=1}^{k}\big(log(c)-(c+1)log(\alpha_j)\big) \\
   \end{align}
   $$
-
-- for $\beta$'s
+  
+- for $\beta_j$
   $$
-  \begin{align}P(\mathbf{\beta} |\mathbf{\alpha}, \mathbf{V}, \gamma, \rho,\mathbf{X}, Z)    & \propto \prod^n_{i=1}\left[r_i^{1-p}\prod_{j=1}^{k}\bigg(\frac{\beta_j^{\alpha_j}}{\Gamma(\alpha_j)}r_i^{\alpha_j-1}e^{-\beta_jr_i}\bigg)^{z_{ij}}\right] \\       & \times \prod_{j=1}^{k}\frac{b^a}{\Gamma(a)}\beta_j^{a-1}e^{-b\beta_j} \\\end{align}
+  \begin{align}
+  &(1-p)\sum_{i=1}^{n} log(r_i)+\sum_{i=1}^{n}\sum_{j=1}^{k}\Big({z_{ij}}log(w_j)\Big)+\\
+  &\sum_{i=1}^{n}\sum_{j=1}^{k}\Big({z_{ij}}log\big(f(r_i|\alpha_j,\beta_j)\big)\Big) + \\
+  &\sum_{j=1}^{k}\big(alog(b)+(a-1)log(\beta_j)-b\beta_j-logamma(a)\big)\\
+  \end{align}
   $$
   
-- for weights $w$'s
-
-  Since weights are not independent with each other and they apparently sum up to $1$, we do not do inference on $w$ directly. Weights $w$ will be transformed into $v$ by using stick-breaking process
-
-- for $v$'s
+- for $v_j$
   $$
-  \begin{aligned}
-  P(\mathbf{\alpha}, \mathbf{\beta}, \mathbf{V}, \gamma, \rho|\mathbf{X}, Z)
-  	& \propto\prod^n_{i=1}\left[r_i^{1-p}\prod_{j=1}^{k}\bigg(w_jr_i^{\alpha_j-1}e^{-\beta_jr_i}\bigg)^{z_{ij}}\right] \\	
-  	& \times \prod_{j=1}^{k-1}\gamma(1-v_j)^{\gamma-1} \\
-  \end{aligned}
+  \begin{align}
+  &(1-p)\sum_{i=1}^{n} log(r_i)+\sum_{i=1}^{n}\sum_{j=1}^{k}\Big({z_{ij}}log(w_j)\Big)+\\
+  &\sum_{i=1}^{n}\sum_{j=1}^{k}\Big({z_{ij}}log\big(f(r_i|\alpha_j,\beta_j)\big)\Big) + \sum_{j=1}^{k-1}\big(log(\gamma)+(\gamma-1)log(1-v_j)\big)\\
+  \end{align}
+  $$
+  
+- for $\theta$
+  $$
+  \begin{align}
+  &-nlog|A|+(1-p)\sum_{i=1}^{n} log(r_i)+\sum_{i=1}^{n}\sum_{j=1}^{k}\Big({z_{ij}}log(w_j)\Big)+\\
+  &\sum_{i=1}^{n}\sum_{j=1}^{k}\Big({z_{ij}}log\big(f(r_i|\alpha_j,\beta_j)\big)\Big)
+  \end{align}
   $$
   
 
-
+Using Metropolis or HMC to draw samples from these log posterior pdfs.
 
 ### Conditional distributions II
 

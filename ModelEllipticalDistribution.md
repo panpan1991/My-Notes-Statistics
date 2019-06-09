@@ -54,13 +54,17 @@ Besides, the correlation matrix $\Omega$ also needs to estimated.
 
 ### Posterior distributions needed
 
-- $P(\alpha|\beta, w, \mathbf{X}, R)$ for each $\alpha$
-- $P(\beta|\alpha, w, \mathbf{X}, R)$ for each $\beta$
-- $P(w|\alpha, \beta, \mathbf{X}, R)$ for each $w$
-- $P(\Omega|\alpha,\beta, \mathbf{X}, R)$
-- $P(R|\alpha,\beta, \mathbf{X}, \Omega)$, which is actually a constant random variable
+- $P(\alpha|\beta, w, \Omega,\mathbf{X}, Z)$ for each $\alpha$
+- $P(\beta|\alpha, w,  \Omega,\mathbf{X}, Z)$ for each $\beta$
+- $P(w|\alpha, \beta,  \Omega,\mathbf{X}, Z)$ for each $w$
+- $P(\Omega|\alpha,\beta, w,\mathbf{X}, Z)$
+- $P( Z|\alpha, \beta, w, \Omega,\mathbf{X})$ 
 
-With those conditional posterior distributions, joint samples of $(\alpha, \beta, w, \Omega, R)$ can be drawn by using Monte Carlo Method.
+With those conditional posterior distributions, joint samples of $(\alpha, \beta, w, \Omega, Z)$ can be drawn by using Monte Carlo Method.
 
-The first three posterior distributions become much simpler after introducing the latent variable.
+The first three posterior distributions become much simpler after introducing the latent variable, avoiding dirty form like multiplication of summation.
+
+$R$ is not latent variable, but simply another form of data set with known $\Omega$. Every time we update $R$ inside the loop is just making posterior distribution of $\alpha$, $\beta$ and $w$ conditioned on the current update of $\Omega$.
+
+$\alpha$'s are mutually independent, so are $\beta$'s. This means $\alpha_j$ 's posterior distribution does not have to be conditioned on other $\alpha$'s. 
 
